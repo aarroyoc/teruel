@@ -1,0 +1,25 @@
+name: Test
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Install Rust cargo
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          profile: minimal
+          components: cargo
+      - name: Install Scryer Prolog
+        uses: logtalk-actions/setup-scryer-prolog@master
+        with:
+          scryer-prolog-version: latest
+      - name: Install Logtalk
+        uses: logtalk-actions/setup-logtalk@master
+        with:
+          logtalk-version: latest
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Execute tests
+        run: logtalk_tester -p scryer
