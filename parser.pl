@@ -3,7 +3,7 @@
 :- use_module(library(lists)).
 
 % Try to implement most of Tera: https://tera.netlify.app/docs/#templates
-% TODO: parse expr
+% TODO: elif
 parser(node(expr(X), Xs)) -->
     "{{ ",
     string_(X),
@@ -29,14 +29,6 @@ parser(node(filter(Filter, X), Xs)) -->
     "{% endfilter %}",
     parser(Xs).
 
-parser(node(if(Expr, X), Xs)) -->
-    "{% if ",
-    string_(Expr),
-    " %}",
-    parser(X),
-    "{% endif %}",
-    parser(Xs).
-
 parser(node(if_else(Expr, X, Y), Xs)) -->
     "{% if ",
     string_(Expr),
@@ -45,6 +37,24 @@ parser(node(if_else(Expr, X, Y), Xs)) -->
     "{% else %}",
     parser(Y),
     "{% endif %}",
+    parser(Xs).
+
+parser(node(if(Expr, X), Xs)) -->
+    "{% if ",
+    string_(Expr),
+    " %}",
+    parser(X),
+    "{% endif %}",
+    parser(Xs).
+
+parser(node(for(LocalVar, ListVar, X), Xs)) -->
+    "{% for ",
+    string_(LocalVar),
+    " in ",
+    string_(ListVar),
+    " %}",
+    parser(X),
+    "{% endfor %}",
     parser(Xs).
 
 % comments
@@ -59,7 +69,7 @@ parser(node(text(X), Xs)) -->
     string_(X),
     {
         length(X, N),
-        N > 0
+        N > 0,!
     },
     parser(Xs).
 

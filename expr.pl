@@ -7,6 +7,8 @@
 % TODO: Concat
 % TODO: Parenthesis
 % TODO: Inline Filters
+% TODO: Lists
+% TODO: Dot syntax
 
 eval_expr(ExprString, Vars, ExprValue) :-
     phrase(logic_expr(ExprTree), ExprString),!,

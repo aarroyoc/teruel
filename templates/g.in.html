@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="utf-8"/>
+        <title>Título</title>
+    </head>
+    <body>
+        <h1>Welcome to Teruel</h1>
+        {% if username == "admin" %}
+            <p>Welcome admin!</p>
+        {% else %}
+        <p>{{ username }}</p>
+            {% if 2 * 2 == 4 %}
+                <p>Good good</p>
+            {% endif %}
+        {% endif %}
+    </body>
+</html>
