@@ -4,6 +4,10 @@
 :- use_module(library(charsio)).
 :- use_module(library(lists)).
 
+% TODO: Concat
+% TODO: Parenthesis
+% TODO: Inline Filters
+
 eval_expr(ExprString, Vars, ExprValue) :-
     phrase(logic_expr(ExprTree), ExprString),!,
     eval(ExprTree, Vars, ExprOutValue),
@@ -26,10 +30,12 @@ logic_expr(or(X, Y)) -->
     " or ",
     logic_expr(Y).
 
+logic_expr(not(X)) -->
+    "not ",
+    logic_expr(X).
+
 logic_expr(X) -->
     bool_expr(X).
-
-% TODO: not
 
 bool_expr(eq(X, Y)) -->
     sum_expr(X),
@@ -124,6 +130,13 @@ eval(or(X, Y), Vars, Value) :-
     ( XValue = false ->
       eval(Y, Vars, Value)
     ; Value = true
+    ).
+
+eval(not(X), Vars, Value) :-
+    eval(X, Vars, XValue),
+    ( XValue = false ->
+      Value = true
+    ; Value = false
     ).
 
 eval(eq(X, Y), Vars, Value) :-

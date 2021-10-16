@@ -21,6 +21,32 @@ parser(node(raw(X), Xs)) -->
     "{% endraw %}",
     parser(Xs).
 
+parser(node(filter(Filter, X), Xs)) -->
+    "{% filter ",
+    string_(Filter),
+    " %}",
+    parser(X),
+    "{% endfilter %}",
+    parser(Xs).
+
+parser(node(if(Expr, X), Xs)) -->
+    "{% if ",
+    string_(Expr),
+    " %}",
+    parser(X),
+    "{% endif %}",
+    parser(Xs).
+
+parser(node(if_else(Expr, X, Y), Xs)) -->
+    "{% if ",
+    string_(Expr),
+    " %}",
+    parser(X),
+    "{% else %}",
+    parser(Y),
+    "{% endif %}",
+    parser(Xs).
+
 % comments
 parser(Xs) -->
     "{#",

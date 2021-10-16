@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="utf-8"/>
+        <title>Título</title>
+    </head>
+    <body>
+        <h1>Welcome to Teruel</h1>
+        {% filter lower %}
+        <p>Expr 1 {{ 1 + 1 }}</p>
+        <p>Expr 2 {{ 2 - 1 }}</p>
+        <p>Expr 3 {{ 1 + 1 + 1 }}</p>
+        {% filter count %}
+        <p>Expr 4 {{ "Hola Mundo" }}</p>
+        {% endfilter %}
+        <p>Expr 5 {{ true }}</p>
+        <p>Expr 6 {{ 6 * 7 }}</p>
+        <p>Expr 7 {{ 1 + 2 * 2 + 1 }}</p>
+        <p>Expr 8 {{ 2 + 2 == 4 }}</p>
+        <p>Expr 9 {{ 2 + 1 == 3 - 1 }}</p>
+        <p>Expr 10 {{ "admin" != username }}</p>
+        <p>Expr 11 {{ 1200 > 100 + 10 }}</p>
+        <p>Expr 12 {{ 1200 >= 100 + 10 }}</p>
+        <p>Expr 13 {{ true and false and true }}</p>
+        <p>Expr 14 {{ 4 > 2 or 3 == 2 }}</p>
+        {% endfilter %}
+    </body>
+</html>
