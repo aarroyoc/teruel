@@ -52,6 +52,11 @@ render_tree(node(for(LocalVar, ListVar, X), Node), Vars, Output) :-
     render_tree(Node, Vars, Output1),
     append(Output0, Output1, Output).
 
+render_tree(node(include(X), Xs), Vars, Output) :-
+    render_tree(X, Vars, Output0),
+    render_tree(Xs, Vars, Output1),
+    append(Output0, Output1, Output).
+
 render_tree([], _, []).
 
 render_for(LocalVar, LocalNode, Vars, ListValue, Block) :-

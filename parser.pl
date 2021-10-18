@@ -1,6 +1,8 @@
 :- module(parser, [parser//1]).
 
 :- use_module(library(lists)).
+:- use_module(library(dif)).
+:- use_module(library(pio)).
 
 % Try to implement most of Tera: https://tera.netlify.app/docs/#templates
 % TODO: elif
@@ -57,6 +59,16 @@ parser(node(for(LocalVar, ListVar, X), Xs)) -->
     "{% endfor %}",
     parser(Xs).
 
+parser(node(include(X), Xs)) -->
+    "{% include \"",
+    string_(File),
+    "\" %}",
+    {
+        atom_chars(AtomFile, File),
+        once(phrase_from_file(parser(X), AtomFile))
+    },
+    parser(Xs).
+
 % comments
 parser(Xs) -->
     "{#",
@@ -78,7 +90,7 @@ parser([]) --> [].
 string_([X|Xs]) -->
     [X],
     {
-        \+ member(X, ['{', '}', '%'])
+        maplist(dif(X), "{}%")
     },
     string_(Xs).
 

@@ -9,9 +9,16 @@
 % TODO: Inline Filters
 % TODO: Lists
 % TODO: Dot syntax
+% TODO: Include (base folder)
+% TODO: Inheritance
+% TODO: Builtins
+% TODO: Docs
+% TODO: In
+% TODO: CI
+% TODO: Sample dice with htmx, HTTP, SVG
 
 eval_expr(ExprString, Vars, ExprValue) :-
-    phrase(logic_expr(ExprTree), ExprString),!,
+    once(phrase(logic_expr(ExprTree), ExprString)),
     eval(ExprTree, Vars, ExprOutValue),
     ( number(ExprOutValue) ->
       number_chars(ExprOutValue, ExprValue)

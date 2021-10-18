@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="utf-8"/>
+        <title>Título</title>
+    </head>
+    <body>
+        <h1>Welcome to Teruel</h1>
+        {% for link in links %}
+            <p>{{ link }}</p>
+        {% endfor %}
+        {% include "templates/footer.html" %}
+    </body>
+</html>

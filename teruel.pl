@@ -8,5 +8,5 @@
 :- use_module(render).
 
 render(Input, Vars, Output) :-
-    phrase_from_file(parser(Tree), Input),!,
+    once(phrase_from_file(parser(Tree), Input)),
     render_tree(Tree, Vars, Output).
