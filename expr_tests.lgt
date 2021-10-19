@@ -3,6 +3,7 @@
 :- object(expr, extends(lgtunit)).
 
     test(var) :- expr:eval_expr("username", ["username"-"aarroyoc"], "aarroyoc").
+    test(dict_var) :- expr:eval_expr("user.login", ["user"-["login"-"aarroyoc", "password"-"123456"]], "aarroyoc").
     test(number) :- expr:eval_expr("42", [], "42").
     test(string) :- expr:eval_expr("\"foo\"", [], "foo").
     test(bool) :- expr:eval_expr("true", [], "true").

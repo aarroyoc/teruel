@@ -1,6 +1,7 @@
 :- module(expr, [eval_expr/3]).
 
 :- use_module(library(dcgs)).
+% :- use_module(library(dif)).
 :- use_module(library(charsio)).
 :- use_module(library(lists)).
 
@@ -217,7 +218,28 @@ eval(number(X), _, N) :-
 eval(string(X), _, X).
 eval(bool(X), _, X).
 eval(var(X), Vars, Value) :-
-    member(X-Value, Vars).
+    phrase(var_dict_get(Value, Vars, []), X).
+
+var_dict_get(Value, Vars, Key) -->
+    [X],
+    {
+        X \= '.',
+        append(Key, [X], NewKey)
+    },
+    var_dict_get(Value, Vars, NewKey).
+
+var_dict_get(Value, Vars, Key) -->
+    ".",
+    {
+        member(Key-NewVars, Vars)
+    },
+    var_dict_get(Value, NewVars, []).
+
+var_dict_get(Value, Vars, Key) -->
+    [],
+    {
+        member(Key-Value, Vars)
+    }.
 
 var_string_start_([C|X]) -->
     [C],
@@ -231,6 +253,10 @@ var_string_([C|X]) -->
     {
         char_type(C, alnum)
     },
+    var_string_(X).
+
+var_string_(['.'|X]) -->
+    ".",
     var_string_(X).
 
 var_string_([]) -->
