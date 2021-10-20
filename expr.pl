@@ -6,10 +6,8 @@
 :- use_module(library(lists)).
 
 % TODO: Concat
-% TODO: Parenthesis
 % TODO: Inline Filters
 % TODO: Lists
-% TODO: Dot syntax
 % TODO: Include (base folder)
 % TODO: Inheritance
 % TODO: Builtins
@@ -19,7 +17,7 @@
 % TODO: Sample dice with htmx, HTTP, SVG
 
 eval_expr(ExprString, Vars, ExprValue) :-
-    once(phrase(logic_expr(ExprTree), ExprString)),
+    once(phrase(expr(ExprTree), ExprString)),
     eval(ExprTree, Vars, ExprOutValue),
     ( number(ExprOutValue) ->
       number_chars(ExprOutValue, ExprValue)
@@ -29,6 +27,9 @@ eval_expr(ExprString, Vars, ExprValue) :-
         ExprValue = "false"
     ; ExprOutValue = ExprValue
     ).
+
+expr(X) -->
+    logic_expr(X).
 
 logic_expr(and(X, Y)) -->
     bool_expr(X),
@@ -125,6 +126,11 @@ data_expr(bool(true)) -->
 data_expr(bool(false)) -->
     "false".
 
+data_expr(par(X)) -->
+    "(",
+    raw_string_(X),
+    ")".
+
 data_expr(var(X)) -->
     var_string_start_(X).
 
@@ -219,6 +225,9 @@ eval(string(X), _, X).
 eval(bool(X), _, X).
 eval(var(X), Vars, Value) :-
     phrase(var_dict_get(Value, Vars, []), X).
+eval(par(X), Vars, Value) :-
+    once(phrase(expr(Tree), X)),
+    eval(Tree, Vars, Value).
 
 var_dict_get(Value, Vars, Key) -->
     [X],

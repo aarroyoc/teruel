@@ -11,6 +11,7 @@
     test(sum_3) :- expr:eval_expr("1 + 2 + 3", [], "6").
     test(sum_minus) :- expr:eval_expr("1 + 2 - 3", [], "0").
     test(mul) :- expr:eval_expr("1 + 3 * 3 + 1", [], "11").
+    test(mul_par) :- expr:eval_expr("(1 + 3) * 3 + 1", [], "13").
     test(div) :- expr:eval_expr("1 - 2 / 2", [], "0").
     test(equal) :- expr:eval_expr("1 + 2 == 3", [], "true").
     test(not_equal) :- expr:eval_expr("3 + 1 != 2 * 2", [], "false").
