@@ -18,5 +18,7 @@
     test(and) :- expr:eval_expr("5 > 4 and 4 > 3", [], "true").
     test(or) :- expr:eval_expr("5 >= 4 or 3 < 1", [], "true").
     test(not) :- expr:eval_expr("not false or true", [], "false").
+    test(filter) :- expr:eval_expr("username | lower", ["username"-"AARROYOC"], "aarroyoc").
+    test(multi_filter) :- expr:eval_expr("user.login | lower | count", ["user"-["login"-"aarroyoc", "password"-"123456"]], "8").
 
 :- end_object.

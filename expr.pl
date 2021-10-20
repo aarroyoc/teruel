@@ -6,7 +6,6 @@
 :- use_module(library(lists)).
 
 % TODO: Concat
-% TODO: Inline Filters
 % TODO: Lists
 % TODO: Include (base folder)
 % TODO: Inheritance
@@ -27,6 +26,11 @@ eval_expr(ExprString, Vars, ExprValue) :-
         ExprValue = "false"
     ; ExprOutValue = ExprValue
     ).
+
+expr(filter(FilterName, X)) -->
+    raw_string_(X),
+    " | ",
+    raw_string_(FilterName).
 
 expr(X) -->
     logic_expr(X).
@@ -133,6 +137,12 @@ data_expr(par(X)) -->
 
 data_expr(var(X)) -->
     var_string_start_(X).
+
+eval(filter(FilterName, X), Vars, Value) :-
+    once(phrase(expr(Tree), X)),
+    eval(Tree, Vars, Value0),
+    atom_chars(FilterAtom, FilterName),
+    call(FilterAtom, Value0, Value).
 
 eval(and(X, Y), Vars, Value) :-
     eval(X, Vars, XValue),
@@ -283,3 +293,19 @@ number_([D|Ds]) --> digit(D), number_(Ds).
 number_([D])    --> digit(D).
 
 digit(D) --> [D], { char_type(D, decimal_digit) }.
+
+% filters
+
+lower(In, Out) :-
+    maplist(char_lower, In, Out).
+
+char_lower(Char, Lower) :-
+    char_code(Char, Code),
+    ((Code >= 65,Code =< 90) ->
+        LowerCode is Code + 32,
+        char_code(Lower, LowerCode)
+    ;   Char = Lower).
+
+count(In, Out) :-
+    length(In, N),
+    number_chars(N, Out).
