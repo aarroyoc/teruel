@@ -5,6 +5,8 @@
 :- use_module(library(charsio)).
 :- use_module(library(lists)).
 
+:- use_module(filters).
+
 % TODO: Concat
 % TODO: Lists
 % TODO: Include (base folder)
@@ -293,19 +295,3 @@ number_([D|Ds]) --> digit(D), number_(Ds).
 number_([D])    --> digit(D).
 
 digit(D) --> [D], { char_type(D, decimal_digit) }.
-
-% filters
-
-lower(In, Out) :-
-    maplist(char_lower, In, Out).
-
-char_lower(Char, Lower) :-
-    char_code(Char, Code),
-    ((Code >= 65,Code =< 90) ->
-        LowerCode is Code + 32,
-        char_code(Lower, LowerCode)
-    ;   Char = Lower).
-
-count(In, Out) :-
-    length(In, N),
-    number_chars(N, Out).

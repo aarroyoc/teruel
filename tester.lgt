@@ -4,5 +4,6 @@
     logtalk_load(lgtunit(loader)),
     % logtalk_load('tests', [hook(lgtunit)]),
     logtalk_load('expr_tests', [hook(lgtunit)]),
-    expr::run
+    logtalk_load('filters_tests', [hook(lgtunit)]),
+    lgtunit::run_test_sets([expr, filters])
 )).
