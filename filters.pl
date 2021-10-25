@@ -2,9 +2,14 @@
     lower/2,
     upper/2,
     charcount/2,
-    capitalize/2
+    wordcount/2,
+    capitalize/2,
+    trim/2,
+    trim_start/2,
+    trim_end/2
 ]).
 
+:- use_module(library(dcgs)).
 :- use_module(library(lists)).
 
 lower(In, Out) :-
@@ -31,6 +36,44 @@ charcount(In, Out) :-
     length(In, N),
     number_chars(N, Out).
 
+wordcount(In, Out) :-
+    once(phrase(wordsplit_(Words), In)),
+    length(Words, N),
+    number_chars(N, Out).
+
+wordsplit_(Words) -->
+    " ",
+    wordsplit_(Words).
+wordsplit_([]) -->
+    word_([]).
+wordsplit_([Word|Words]) -->
+    word_(Word),
+    wordsplit_(Words).
+
+word_([Char|Chars]) -->
+    [Char],
+    {
+        \+ member(Char, " "),
+        !
+    },
+    word_(Chars).
+word_([]) --> [].
+
 capitalize([First|Rest], [UpperFirst|LowerRest]) :-
     char_upper(First, UpperFirst),
     lower(Rest, LowerRest).
+
+trim(In, Out) :-
+    trim_start(In, S),
+    trim_end(S, Out).
+
+trim_start([' '|In], Out) :-
+    trim_start(In, Out).
+trim_start([X|In], [X|In]) :-
+    X \= ' '.
+
+trim_end(In, Out) :-
+    reverse(In, RIn),
+    trim_start(RIn, ROut),
+    reverse(ROut, Out).
+
