@@ -6,7 +6,8 @@
     capitalize/2,
     trim/2,
     trim_start/2,
-    trim_end/2
+    trim_end/2,
+    truncate/3
 ]).
 
 :- use_module(library(dcgs)).
@@ -77,3 +78,8 @@ trim_end(In, Out) :-
     trim_start(RIn, ROut),
     reverse(ROut, Out).
 
+truncate(In, Out, Args) :-
+    member("length"-Length, Args),
+    number_chars(N, Length),
+    append(Out, _, In),
+    length(Out, N).

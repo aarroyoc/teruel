@@ -10,5 +10,6 @@
     test(trim) :- filters:trim("     hola amigos  ", "hola amigos").
     test(trim_start) :- filters:trim_start("     hola amigos  ", "hola amigos  ").
     test(trim_end) :- filters:trim_end("     hola amigos  ", "     hola amigos").
+    test(truncate) :- filters:truncate("hola amigos", "hola", ["length"-"4"]).
 
 :- end_object.

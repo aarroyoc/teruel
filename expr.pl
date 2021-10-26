@@ -140,11 +140,16 @@ data_expr(par(X)) -->
 data_expr(var(X)) -->
     var_string_start_(X).
 
-eval(filter(FilterName, X), Vars, Value) :-
+eval(filter(FilterExpr, X), Vars, Value) :-
     once(phrase(expr(Tree), X)),
     eval(Tree, Vars, Value0),
+    once(phrase(filter_(FilterName, FilterArgs), FilterExpr)),
     atom_chars(FilterAtom, FilterName),
-    call(FilterAtom, Value0, Value).
+    (FilterArgs = [] ->
+        call(FilterAtom, Value0, Value)
+    ;   call(FilterAtom, Value0, Value, FilterArgs)
+    ).
+    
 
 eval(and(X, Y), Vars, Value) :-
     eval(X, Vars, XValue),
@@ -240,6 +245,28 @@ eval(var(X), Vars, Value) :-
 eval(par(X), Vars, Value) :-
     once(phrase(expr(Tree), X)),
     eval(Tree, Vars, Value).
+
+filter_(FilterName, FilterArgs) -->
+    raw_string_(FilterName),
+    "(",
+    !,
+    filter_args_(FilterArgs),
+    ")".
+
+filter_(FilterName, []) -->
+    raw_string_(FilterName).
+
+filter_args_([ArgName-ArgValue|FilterArgs]) -->
+    raw_string_(ArgName),
+    "=",
+    raw_string_(ArgValue),
+    ", ",
+    filter_args_(FilterArgs).
+
+filter_args_([ArgName-ArgValue]) -->
+    raw_string_(ArgName),
+    "=",
+    raw_string_(ArgValue).
 
 var_dict_get(Value, Vars, Key) -->
     [X],
