@@ -9,13 +9,13 @@
 
 % TODO: Concat
 % TODO: Lists
-% TODO: Include (base folder)
-% TODO: Inheritance
+% TODO: Base folder for inheritance, include, ...
 % TODO: Builtins
 % TODO: Docs
 % TODO: In
 % TODO: CI
 % TODO: Sample dice with htmx, HTTP, SVG
+% TODO: HTML Scaping
 
 eval_expr(ExprString, Vars, ExprValue) :-
     once(phrase(expr(ExprTree), ExprString)),

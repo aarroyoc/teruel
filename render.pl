@@ -57,11 +57,33 @@ render_tree(node(include(X), Xs), Vars, Output) :-
     render_tree(Xs, Vars, Output1),
     append(Output0, Output1, Output).
 
+render_tree(node(extends(X, Blocks)), Vars, Output) :-
+    maplist(prefix_blocks, Blocks, VarBlocks),
+    append(VarBlocks, Vars, VarsExtends),
+    render_tree(X, VarsExtends, Output).
+
+render_tree(node(block(Name, X), Xs), Vars, Output) :-
+    append("__block__", Name, VarBlockName),
+    (
+        member(VarBlockName-Block, Vars) ->
+        (
+            render_tree(X, Vars, Super),
+            SuperVars = ["super"-Super|Vars],
+            render_tree(Block, SuperVars, Output0)
+        )
+    ;   render_tree(X, Vars, Output0)
+    ),
+    render_tree(Xs, Vars, Output1),
+    append(Output0, Output1, Output).
+
 render_tree([], _, []).
 
 render_for(LocalVar, LocalNode, Vars, ListValue, Block) :-
     append(Vars, [LocalVar-ListValue], LocalVars),
     render_tree(LocalNode, LocalVars, Block).
+
+prefix_blocks(BlockName-Block, VarBlockName-Block) :-
+    append("__block__", BlockName, VarBlockName).
 
 % filters
 

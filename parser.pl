@@ -69,6 +69,24 @@ parser(node(include(X), Xs)) -->
     },
     parser(Xs).
 
+parser(node(extends(X, Blocks))) -->
+    "{% extends \"",
+    string_(File),
+    "\" %}",
+    parser_blocks(Blocks),
+    {
+        atom_chars(AtomFile, File),
+        phrase_from_file(parser(X), AtomFile)
+    }.
+
+parser(node(block(Name, X), Xs)) -->
+    "{% block ",
+    string_(Name),
+    " %}",
+    parser(X),
+    "{% endblock %}",
+    parser(Xs).
+
 % comments
 parser(Xs) -->
     "{#",
@@ -86,6 +104,19 @@ parser(node(text(X), Xs)) -->
     parser(Xs).
 
 parser([]) --> [].
+
+% Parser for child templates
+
+parser_blocks([Name-X|Blocks]) -->
+    string_(_),
+    "{% block ",
+    string_(Name),
+    " %}",
+    parser(X),
+    "{% endblock %}",
+    parser_blocks(Blocks).
+
+parser_blocks([]) --> [].
 
 string_([X|Xs]) -->
     [X],
