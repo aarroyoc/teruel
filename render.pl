@@ -64,44 +64,19 @@ render_tree(node(extends(X, Blocks)), Vars, Output) :-
 
 render_tree(node(block(Name, X), Xs), Vars, Output) :-
     append("__block__", Name, VarBlockName),
-    (\+ member(VarBlockName-X, Vars) ->
-        append(Vars, [VarBlockName-X], VarsBlock)
-    ;   Vars = VarsBlock
-    ),
-    findall(Block, member(VarBlockName-Block, VarsBlock), Blocks),
-    (
-        length(Blocks, 1) ->
-        (
-            % no inheritance
-            render_tree(X, Vars, Output0)
-        )
-    ;   (
-            % inheritance 1 and 2 levels
-            Blocks = [Block,SuperBlock|BlocksRest],
-            (
-                (
-                    BlocksRest = [SuperSuperBlock|_],
-                    render_tree(SuperSuperBlock, Vars, SuperSuper)
-                )
-                ;   SuperSuper = "undefined"
-            ),
-            clean_var("super", VarsBlock, Clean0),
-            clean_var(VarBlockName, Clean0, CleanVars),
-            render_tree(SuperBlock, ["super"-SuperSuper|CleanVars], Super),
-            SuperVars = ["super"-Super|CleanVars],
-            render_tree(Block, SuperVars, Output0)
-        )
-    ),
+    findall(Block, member(VarBlockName-Block, Vars), BlocksR),
+    reverse(BlocksR, Blocks),
+    render_block([X|Blocks], Vars, Output0),
     render_tree(Xs, Vars, Output1),
     append(Output0, Output1, Output).
 
 render_tree([], _, []).
 
-clean_var(_, [], []).
-clean_var(Y, [VarName-X|Xs], [VarName-X|Zs]) :-
-    VarName \= Y,
-    clean_var(Y, Xs, Zs).
-clean_var(Y, [Y-_|Xs], Xs).
+render_block([Block], Vars, Output) :-
+    render_tree(Block, Vars, Output).
+render_block([Block|Blocks], Vars, Output) :-
+    render_tree(Block, Vars, Super),
+    render_block(Blocks, ["super"-Super|Vars], Output).
     
 
 render_for(LocalVar, LocalNode, Vars, ListValue, Block) :-
