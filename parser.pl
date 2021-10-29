@@ -142,10 +142,8 @@ raw_string_([]) -->
 canonical_dir(Chars, FolderPath) :-
     path_canonical(Chars, Path),
     path_segments(Path, PathSegments),
-    reverse(PathSegments, RevPathSegments),
-    RevPathSegments = [_|FolderPathSegments],
-    reverse(FolderPathSegments, RFolderPathSegments),
-    path_segments(FolderPath, RFolderPathSegments).
+    once(append(FolderPathSegments, [_], PathSegments)),
+    path_segments(FolderPath, FolderPathSegments).
 
 concat_path(Path, File, PathFile) :-
     path_segments(Path, P0),
