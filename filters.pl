@@ -7,7 +7,10 @@
     trim/2,
     trim_start/2,
     trim_end/2,
-    truncate/3
+    truncate/3,
+    first/2,
+    last/2,
+    nth/3
 ]).
 
 :- use_module(library(dcgs)).
@@ -83,3 +86,14 @@ truncate(In, Out, Args) :-
     number_chars(N, Length),
     append(Out, _, In),
     length(Out, N).
+
+first([Out|_], Out).
+
+last([X], X).
+last([_|Xs], Out) :-
+    last(Xs, Out).
+
+nth(In, Out, Args) :-
+    member("n"-NString, Args),
+    number_chars(N, NString),
+    nth0(N, In, Out).

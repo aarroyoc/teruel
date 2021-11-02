@@ -11,5 +11,8 @@
     test(trim_start) :- filters:trim_start("     hola amigos  ", "hola amigos  ").
     test(trim_end) :- filters:trim_end("     hola amigos  ", "     hola amigos").
     test(truncate) :- filters:truncate("hola amigos", "hola", ["length"-"4"]).
+    test(first) :- filters:first([1,2,3], 1).
+    test(last) :- filters:last([1,2,3], 3).
+    test(nth) :- filters:nth([1,2,3], 2, ["n"-"1"]).
 
 :- end_object.

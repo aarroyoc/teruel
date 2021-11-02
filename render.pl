@@ -1,8 +1,10 @@
 :- module(render, [render_tree/3]).
 
 :- use_module(library(lists)).
+:- use_module(library(dcgs)).
 
 :- use_module(expr).
+:- use_module(filters).
 
 render_tree(node(text(X), Node), Vars, Output) :-
     render_tree(Node, Vars, Output1),
@@ -17,11 +19,15 @@ render_tree(node(raw(X), Node), Vars, Output) :-
     render_tree(Node, Vars, Output1),
     append(X, Output1, Output).
 
-render_tree(node(filter(FilterName, X), Node), Vars, Output) :-
+render_tree(node(filter(FilterExpr, X), Node), Vars, Output) :-
     render_tree(X, Vars, Output0),
     render_tree(Node, Vars, Output1),
+    once(phrase(filter_(FilterName, FilterArgs), FilterExpr)),
     atom_chars(FilterAtom, FilterName),
-    call(FilterAtom, Output0, OutputFiltered),
+    (FilterArgs = [] ->
+        call(FilterAtom, Output0, OutputFiltered)
+    ;   call(FilterAtom, Output0, OutputFiltered, FilterArgs)
+    ),
     append(OutputFiltered, Output1, Output).
 
 render_tree(node(if(Expr, X), Node), Vars, Output) :-
@@ -85,19 +91,3 @@ render_for(LocalVar, LocalNode, Vars, ListValue, Block) :-
 
 prefix_blocks(BlockName-Block, VarBlockName-Block) :-
     append("__block__", BlockName, VarBlockName).
-
-% filters
-
-lower(In, Out) :-
-    maplist(char_lower, In, Out).
-
-char_lower(Char, Lower) :-
-    char_code(Char, Code),
-    ((Code >= 65,Code =< 90) ->
-        LowerCode is Code + 32,
-        char_code(Lower, LowerCode)
-    ;   Char = Lower).
-
-count(In, Out) :-
-    length(In, N),
-    number_chars(N, Out).

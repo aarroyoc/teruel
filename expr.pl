@@ -1,4 +1,4 @@
-:- module(expr, [eval_expr/3]).
+:- module(expr, [eval_expr/3, filter_//2]).
 
 :- use_module(library(dcgs)).
 % :- use_module(library(dif)).
@@ -14,8 +14,8 @@
 % TODO: In
 % TODO: CI
 % TODO: Sample dice with htmx, HTTP, SVG
+% TODO: Birthday game
 % TODO: HTML Scaping
-% TODO: Filter statement
 
 eval_expr(ExprString, Vars, ExprValue) :-
     once(phrase(expr(ExprTree), ExprString)),

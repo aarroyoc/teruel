@@ -21,5 +21,6 @@
     test(filter) :- expr:eval_expr("username | lower", ["username"-"AARROYOC"], "aarroyoc").
     test(multi_filter) :- expr:eval_expr("user.login | lower | charcount", ["user"-["login"-"aarroyoc", "password"-"123456"]], "8").
     test(filter_param) :- expr:eval_expr("user.login | lower | truncate(length=4)", ["user"-["login"-"aarroyoc", "password"-"123456"]], "aarr").
+    test(nth) :- expr:eval_expr("links | nth(n=1)", ["links"-["https://github.com", "https://adrianistan.eu"]], "https://adrianistan.eu").
 
 :- end_object.

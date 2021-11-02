@@ -298,3 +298,6 @@ Here are the list of filters Teruel supports:
 * `trim_start` - Removes the whitespaces at the start
 * `trim_end` - Remove the whitespaces at the end
 * `truncate(length=N)` - Truncates the string to the first N characters
+* `first` - First element of an array
+* `last` - Last element of an array
+* `nth(n=N)` - Element N of the array. Starts counting at 0
