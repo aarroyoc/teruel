@@ -11,7 +11,8 @@
     filter_first/2,
     filter_last/2,
     filter_nth/3,
-    filter_replace/3
+    filter_replace/3,
+    filter_title/2
 ]).
 
 :- use_module(library(dcgs)).
@@ -103,7 +104,7 @@ filter_nth(In, Out, Args) :-
 filter_replace(In, Out, Args) :-
     member("from"-string(From), Args),
     member("to"-string(To), Args),
-    phrase(replace_(From, To, Out), In).
+    once(phrase(replace_(From, To, Out), In)).
     
 
 replace_(From, To, Out) -->
@@ -121,6 +122,18 @@ replace_(From, _, X) -->
     {
         \+ append(From, _, X)
     }.
+
+filter_title(In, Out) :-
+    once(phrase(wordsplit_(Words), In)),
+    maplist(filter_capitalize, Words, TitleWords),
+    once(phrase(join_(" ", TitleWords), Out)).
+
+join_(Joiner, [X|Xs]) -->
+    string_(X),
+    string_(Joiner),
+    join_(Joiner, Xs).
+join_(_, [X]) -->
+    string_(X).
 
 string_([X|Xs]) -->
     [X],

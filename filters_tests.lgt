@@ -15,5 +15,6 @@
     test(last) :- filters:filter_last([1,2,3], 3).
     test(nth) :- filters:filter_nth([1,2,3], 2, ["n"-number("1")]).
     test(replace) :- filters:filter_replace("hola amigos", "adios amigos", ["from"-string("hola"), "to"-string("adios")]).
+    test(title) :- filters:filter_title("hola amigos  cruel", "Hola Amigos Cruel").
 
 :- end_object.

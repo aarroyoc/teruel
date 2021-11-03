@@ -302,3 +302,4 @@ Here are the list of filters Teruel supports:
 * `last` - Last element of an array
 * `nth(n=N)` - Element N of the array. Starts counting at 0
 * `replace(from=From, to=To)` - Replaces the From substring with the To substring in a bigger string.
+* `title` - Removes spaces and capitalizes the first letter of each word
