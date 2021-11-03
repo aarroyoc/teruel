@@ -16,7 +16,8 @@
     filter_join/3,
     filter_reverse/2,
     filter_sort/2,
-    filter_sort/3
+    filter_sort/3,
+    filter_unique/2
 ]).
 
 :- use_module(library(dcgs)).
@@ -159,6 +160,9 @@ filter_sort(In, Out, Args) :-
 get_key(Key, Item, Value) :-
     member(Key-Value, Item).
     
+
+filter_unique(In, Out) :-
+    list_to_set(In, Out).
 
 string_([X|Xs]) -->
     [X],

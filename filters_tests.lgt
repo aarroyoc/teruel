@@ -20,5 +20,6 @@
     test(reverse) :- filters:filter_reverse("hola amigos", "sogima aloh").
     test(simple_sort) :- filters:filter_sort([4,2,1,3], [1,2,3,4]).
     test(complex_sort) :- filters:filter_sort([["age"-34, "name"-"Pepe"], ["age"-21, "name"-"Marisa"], ["age"-56, "name"-"César"]], [["age"-21, "name"-"Marisa"], ["age"-34, "name"-"Pepe"], ["age"-56, "name"-"César"]], ["key"-string("age")]).
+    test(unique) :- filters:filter_unique([1,2,3,1,2,3], [1,2,3]).
 
 :- end_object.

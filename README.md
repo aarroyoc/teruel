@@ -307,3 +307,4 @@ Here are the list of filters Teruel supports:
 * `reverse` - Reverse string or list
 * `sort` - Sort a list
 * `sort(key=Key)` - Sort a list by looking at the value of the key. Works for list of pairs.
+* `unique` - Removes duplicated elements
