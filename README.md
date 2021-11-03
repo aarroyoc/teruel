@@ -291,7 +291,7 @@ Here are the list of filters Teruel supports:
 
 * `lower` - Convert uppercase letters to lowercase
 * `upper` - Convert lowercase letters to uppercase
-* `charcount` - Counts the number of chars a string has
+* `length` - Counts the number of chars a string has or the number of items in a list
 * `wordcount` - Counts the number of words a string has
 * `capitalize` - Converts the first letter to uppercase, the rest to lowercase
 * `trim` - Removes the whitespaces at the start and at the end
@@ -301,3 +301,4 @@ Here are the list of filters Teruel supports:
 * `first` - First element of an array
 * `last` - Last element of an array
 * `nth(n=N)` - Element N of the array. Starts counting at 0
+* `replace(from=From, to=To)` - Replaces the From substring with the To substring in a bigger string.

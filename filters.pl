@@ -1,22 +1,24 @@
 :- module(filters, [
-    lower/2,
-    upper/2,
-    charcount/2,
-    wordcount/2,
-    capitalize/2,
-    trim/2,
-    trim_start/2,
-    trim_end/2,
-    truncate/3,
-    first/2,
-    last/2,
-    nth/3
+    filter_lower/2,
+    filter_upper/2,
+    filter_length/2,
+    filter_wordcount/2,
+    filter_capitalize/2,
+    filter_trim/2,
+    filter_trim_start/2,
+    filter_trim_end/2,
+    filter_truncate/3,
+    filter_first/2,
+    filter_last/2,
+    filter_nth/3,
+    filter_replace/3
 ]).
 
 :- use_module(library(dcgs)).
 :- use_module(library(lists)).
 
-lower(In, Out) :-
+% TODO: https://github.com/mthom/scryer-prolog/issues/748
+filter_lower(In, Out) :-
     maplist(char_lower, In, Out).
 
 char_lower(Char, Lower) :-
@@ -26,7 +28,7 @@ char_lower(Char, Lower) :-
         char_code(Lower, LowerCode)
     ;   Char = Lower).
 
-upper(In, Out) :-
+filter_upper(In, Out) :-
     maplist(char_upper, In, Out).
 
 char_upper(Char, Upper) :-
@@ -36,11 +38,11 @@ char_upper(Char, Upper) :-
         char_code(Upper, UpperCode)
     ;   Char = Upper).
 
-charcount(In, Out) :-
+filter_length(In, Out) :-
     length(In, N),
     number_chars(N, Out).
 
-wordcount(In, Out) :-
+filter_wordcount(In, Out) :-
     once(phrase(wordsplit_(Words), In)),
     length(Words, N),
     number_chars(N, Out).
@@ -63,37 +65,66 @@ word_([Char|Chars]) -->
     word_(Chars).
 word_([]) --> [].
 
-capitalize([First|Rest], [UpperFirst|LowerRest]) :-
+filter_capitalize([First|Rest], [UpperFirst|LowerRest]) :-
     char_upper(First, UpperFirst),
-    lower(Rest, LowerRest).
+    filter_lower(Rest, LowerRest).
 
-trim(In, Out) :-
-    trim_start(In, S),
-    trim_end(S, Out).
+filter_trim(In, Out) :-
+    filter_trim_start(In, S),
+    filter_trim_end(S, Out).
 
-trim_start([' '|In], Out) :-
-    trim_start(In, Out).
-trim_start([X|In], [X|In]) :-
+filter_trim_start([' '|In], Out) :-
+    filter_trim_start(In, Out).
+filter_trim_start([X|In], [X|In]) :-
     X \= ' '.
 
-trim_end(In, Out) :-
+filter_trim_end(In, Out) :-
     reverse(In, RIn),
-    trim_start(RIn, ROut),
+    filter_trim_start(RIn, ROut),
     reverse(ROut, Out).
 
-truncate(In, Out, Args) :-
-    member("length"-Length, Args),
-    number_chars(N, Length),
+filter_truncate(In, Out, Args) :-
+    member("length"-number(NString), Args),
+    number_chars(N, NString),
     append(Out, _, In),
     length(Out, N).
 
-first([Out|_], Out).
+filter_first([Out|_], Out).
 
-last([X], X).
-last([_|Xs], Out) :-
-    last(Xs, Out).
+filter_last([X], X).
+filter_last([_|Xs], Out) :-
+    filter_last(Xs, Out).
 
-nth(In, Out, Args) :-
-    member("n"-NString, Args),
+filter_nth(In, Out, Args) :-
+    member("n"-number(NString), Args),
     number_chars(N, NString),
     nth0(N, In, Out).
+
+filter_replace(In, Out, Args) :-
+    member("from"-string(From), Args),
+    member("to"-string(To), Args),
+    phrase(replace_(From, To, Out), In).
+    
+
+replace_(From, To, Out) -->
+    string_(X),
+    string_(From),
+    {
+        \+ append(From, _, X),
+        append(X, To, Section),
+        append(Section, Xs, Out)
+    },
+    replace_(From, To, Xs).
+
+replace_(From, _, X) -->
+    string_(X),
+    {
+        \+ append(From, _, X)
+    }.
+
+string_([X|Xs]) -->
+    [X],
+    string_(Xs).
+
+string_([]) -->
+    [].

@@ -23,7 +23,8 @@ render_tree(node(filter(FilterExpr, X), Node), Vars, Output) :-
     render_tree(X, Vars, Output0),
     render_tree(Node, Vars, Output1),
     once(phrase(filter_(FilterName, FilterArgs), FilterExpr)),
-    atom_chars(FilterAtom, FilterName),
+    append("filter_", FilterName, FilterNameComplete),
+    atom_chars(FilterAtom, FilterNameComplete),
     (FilterArgs = [] ->
         call(FilterAtom, Output0, OutputFiltered)
     ;   call(FilterAtom, Output0, OutputFiltered, FilterArgs)

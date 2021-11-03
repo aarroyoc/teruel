@@ -144,7 +144,8 @@ eval(filter(FilterExpr, X), Vars, Value) :-
     once(phrase(expr(Tree), X)),
     eval(Tree, Vars, Value0),
     once(phrase(filter_(FilterName, FilterArgs), FilterExpr)),
-    atom_chars(FilterAtom, FilterName),
+    append("filter_", FilterName, FilterNameComplete),
+    atom_chars(FilterAtom, FilterNameComplete),
     (FilterArgs = [] ->
         call(FilterAtom, Value0, Value)
     ;   call(FilterAtom, Value0, Value, FilterArgs)
@@ -259,14 +260,14 @@ filter_(FilterName, []) -->
 filter_args_([ArgName-ArgValue|FilterArgs]) -->
     raw_string_(ArgName),
     "=",
-    raw_string_(ArgValue),
+    data_expr(ArgValue),
     ", ",
     filter_args_(FilterArgs).
 
 filter_args_([ArgName-ArgValue]) -->
     raw_string_(ArgName),
     "=",
-    raw_string_(ArgValue).
+    data_expr(ArgValue).
 
 var_dict_get(Value, Vars, Key) -->
     [X],
