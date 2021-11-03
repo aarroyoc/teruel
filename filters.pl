@@ -12,7 +12,9 @@
     filter_last/2,
     filter_nth/3,
     filter_replace/3,
-    filter_title/2
+    filter_title/2,
+    filter_join/3,
+    filter_reverse/2
 ]).
 
 :- use_module(library(dcgs)).
@@ -134,6 +136,13 @@ join_(Joiner, [X|Xs]) -->
     join_(Joiner, Xs).
 join_(_, [X]) -->
     string_(X).
+
+filter_join(In, Out, Args) :-
+    member("sep"-string(Joiner), Args),
+    once(phrase(join_(Joiner, In), Out)).
+
+filter_reverse(In, Out) :-
+    reverse(In, Out).
 
 string_([X|Xs]) -->
     [X],

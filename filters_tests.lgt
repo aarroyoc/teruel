@@ -16,5 +16,7 @@
     test(nth) :- filters:filter_nth([1,2,3], 2, ["n"-number("1")]).
     test(replace) :- filters:filter_replace("hola amigos", "adios amigos", ["from"-string("hola"), "to"-string("adios")]).
     test(title) :- filters:filter_title("hola amigos  cruel", "Hola Amigos Cruel").
+    test(join) :- filters:filter_join(["hola", "amigos", "cruel"], "hola//amigos//cruel", ["sep"-string("//")]).
+    test(reverse) :- filters:filter_reverse("hola amigos", "sogima aloh").
 
 :- end_object.
