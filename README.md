@@ -305,3 +305,5 @@ Here are the list of filters Teruel supports:
 * `title` - Removes spaces and capitalizes the first letter of each word
 * `join(sep=Sep)` - Joins a list of strings with sep string in between
 * `reverse` - Reverse string or list
+* `sort` - Sort a list
+* `sort(key=Key)` - Sort a list by looking at the value of the key. Works for list of pairs.

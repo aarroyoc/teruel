@@ -14,11 +14,14 @@
     filter_replace/3,
     filter_title/2,
     filter_join/3,
-    filter_reverse/2
+    filter_reverse/2,
+    filter_sort/2,
+    filter_sort/3
 ]).
 
 :- use_module(library(dcgs)).
 :- use_module(library(lists)).
+:- use_module(library(pairs)).
 
 % TODO: https://github.com/mthom/scryer-prolog/issues/748
 filter_lower(In, Out) :-
@@ -143,6 +146,19 @@ filter_join(In, Out, Args) :-
 
 filter_reverse(In, Out) :-
     reverse(In, Out).
+
+filter_sort(In, Out) :-
+    sort(In, Out).
+
+filter_sort(In, Out, Args) :-
+    member("key"-string(Key), Args),
+    map_list_to_pairs(get_key(Key), In, Pairs),
+    keysort(Pairs, Sorted),
+    pairs_values(Sorted, Out).
+
+get_key(Key, Item, Value) :-
+    member(Key-Value, Item).
+    
 
 string_([X|Xs]) -->
     [X],

@@ -16,6 +16,7 @@
 % TODO: Sample dice with htmx, HTTP, SVG
 % TODO: Birthday game
 % TODO: HTML Scaping
+% TODO: Filters in for
 
 eval_expr(ExprString, Vars, ExprValue) :-
     once(phrase(expr(ExprTree), ExprString)),

@@ -18,5 +18,7 @@
     test(title) :- filters:filter_title("hola amigos  cruel", "Hola Amigos Cruel").
     test(join) :- filters:filter_join(["hola", "amigos", "cruel"], "hola//amigos//cruel", ["sep"-string("//")]).
     test(reverse) :- filters:filter_reverse("hola amigos", "sogima aloh").
+    test(simple_sort) :- filters:filter_sort([4,2,1,3], [1,2,3,4]).
+    test(complex_sort) :- filters:filter_sort([["age"-34, "name"-"Pepe"], ["age"-21, "name"-"Marisa"], ["age"-56, "name"-"César"]], [["age"-21, "name"-"Marisa"], ["age"-34, "name"-"Pepe"], ["age"-56, "name"-"César"]], ["key"-string("age")]).
 
 :- end_object.
