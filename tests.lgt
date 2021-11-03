@@ -9,6 +9,7 @@
     test(comment_block) :- template_test("templates/c.in.html", "templates/c.out.html", ["username"-"aarroyoc"]).
 
     test(for_loop) :- template_test("templates/h.in.html", "templates/h.out.html", ["username"-"aarroyoc", "links"-["https://github.com", "https://adrianistan.eu"]]).
+    test(for_loop_filter) :- template_test("templates/j.in.html", "templates/j.out.html", ["webs"-[["name"-"Google", "popularity"-100], ["name"-"GitHub", "popularity"-40]]]).
 
     template_test(In, Out, Vars) :-
       teruel:render(In, Vars, OutputReal),

@@ -51,8 +51,8 @@ render_tree(node(if_else(Expr, X, Y), Node), Vars, Output) :-
     ),
     append(Output0, Output1, Output).
 
-render_tree(node(for(LocalVar, ListVar, X), Node), Vars, Output) :-
-    member(ListVar-ListValues, Vars),
+render_tree(node(for(LocalVar, ListExpr, X), Node), Vars, Output) :-
+    eval_expr(ListExpr, Vars, ListValues),
     maplist(render_for(LocalVar, X, Vars), ListValues, Blocks),
     reverse(Blocks, BlocksReversed),
     foldl(append, BlocksReversed, [], Output0),

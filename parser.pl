@@ -49,11 +49,11 @@ parser(node(if(Expr, X), Xs), Path) -->
     "{% endif %}",
     parser(Xs, Path).
 
-parser(node(for(LocalVar, ListVar, X), Xs), Path) -->
+parser(node(for(LocalVar, ListExpr, X), Xs), Path) -->
     "{% for ",
     string_(LocalVar),
     " in ",
-    string_(ListVar),
+    string_(ListExpr),
     " %}",
     parser(X, Path),
     "{% endfor %}",
