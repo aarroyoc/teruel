@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Dice Webapp</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="/htmx.min.js"></script>
+        <style>
+            body {
+                font-family: sans-serif;
+                font-size: 16px;
+                line-height: 1.5;
+                text-align: center;
+                width: 100%;
+                margin: 0;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Dice Webapp</h1>
+        <div id="image">
+
+        </div>
+        <button hx-get="/dice.svg" hx-trigger="click" hx-target="#image" hx-swap="innerHTML">Roll the dice!</button>
+    </body>
+</html>

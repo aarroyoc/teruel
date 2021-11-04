@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+    <rect x="0" y="0" width="128" height="128" rx="16" ry="16" fill="black"/>
+    <rect x="10" y="10" width="108" height="108" rx="8" ry="8" fill="white"/>
+    {% if n == 1 %}
+    <circle cx="64" cy="64" r="16" fill="black"/>
+    {% endif %}
+    {% if n == 2 %}
+    <circle cx="32" cy="32" r="16" fill="black"/>
+    <circle cx="96" cy="96" r="16" fill="black"/>
+    {% endif %}
+    {% if n == 3 %}
+    <circle cx="32" cy="32" r="16" fill="black"/>
+    <circle cx="96" cy="96" r="16" fill="black"/>
+    <circle cx="64" cy="64" r="16" fill="black"/>
+    {% endif %}
+    {% if n == 4 %}
+    <circle cx="32" cy="32" r="16" fill="black"/>
+    <circle cx="96" cy="96" r="16" fill="black"/>
+    <circle cx="32" cy="96" r="16" fill="black"/>
+    <circle cx="96" cy="32" r="16" fill="black"/>
+    {% endif %}
+    {% if n == 5 %}
+    <circle cx="32" cy="32" r="16" fill="black"/>
+    <circle cx="96" cy="96" r="16" fill="black"/>
+    <circle cx="32" cy="96" r="16" fill="black"/>
+    <circle cx="96" cy="32" r="16" fill="black"/>
+    <circle cx="64" cy="64" r="16" fill="black"/>
+    {% endif %}
+    {% if n == 6 %}
+    <circle cx="32" cy="32" r="14" fill="black"/>
+    <circle cx="96" cy="96" r="14" fill="black"/>
+    <circle cx="32" cy="96" r="14" fill="black"/>
+    <circle cx="96" cy="32" r="14" fill="black"/>
+    <circle cx="32" cy="64" r="14" fill="black"/>
+    <circle cx="96" cy="64" r="14" fill="black"/>
+    {% endif %}
+</svg>
