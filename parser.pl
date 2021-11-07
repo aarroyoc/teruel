@@ -1,7 +1,6 @@
 :- module(parser, [parser//2, canonical_dir/2]).
 
 :- use_module(library(lists)).
-:- use_module(library(dif)).
 :- use_module(library(pio)).
 :- use_module(library(files)).
 
@@ -125,7 +124,7 @@ parser_blocks([], _) --> [].
 string_([X|Xs]) -->
     [X],
     {
-        maplist(dif(X), "{}%")
+        \+ member(X, "{}%")
     },
     string_(Xs).
 

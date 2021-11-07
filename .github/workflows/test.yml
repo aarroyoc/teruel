@@ -3,7 +3,7 @@ on: [push]
 
 jobs:
   test:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-18.04
     steps:
       - name: Install Rust cargo
         uses: actions-rs/toolchain@v1
@@ -14,11 +14,11 @@ jobs:
       - name: Install Scryer Prolog
         uses: logtalk-actions/setup-scryer-prolog@master
         with:
-          scryer-prolog-version: latest
+          scryer-prolog-version: 0.8.127
       - name: Install Logtalk
         uses: logtalk-actions/setup-logtalk@master
         with:
-          logtalk-version: latest
+          logtalk-version: 3.50.0
       - name: Checkout
         uses: actions/checkout@v2
       - name: Execute tests
