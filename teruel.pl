@@ -1,4 +1,4 @@
-:- module(teruel, [render/3]).
+:- module(teruel, [render/3, html_render_response/2, html_render_response/3]).
 
 :- use_module(library(dcgs)).
 :- use_module(library(pio)).
@@ -14,3 +14,9 @@ render(InputCs, Vars, Output) :-
     canonical_dir(InputCs, FolderPath),
     once(phrase_from_file(parser(Tree, FolderPath), Input)),
     render_tree(Tree, Vars, Output).
+
+html_render_response(Response, Input) :-
+    html_render_response(Response, Input, []).
+
+html_render_response(http_response(_, html(Output), _), Input, Vars) :-
+    render(Input, Vars, Output).

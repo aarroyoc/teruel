@@ -23,6 +23,16 @@ The predicate `render/3` will be available for you.
 render("templates/i.in.html", ["username"-"aarroyoc", "links"-["https://github.com", "https://adrianistan.eu"]], Output).
 ```
 
+If you're using the Scryer HTTP server and you want to render HTML files, you can simplify your code by using the predicate `html_render_response/2,3`.
+
+* `html_render_response(Response, +Filename, +Vars)`.
+  - Response. The Scryer HTTP response
+  - Filename. The template path
+  - Vars. A list of pairs for the variables you want to be available in the template
+
+* `html_render_response(Response, +Filename)`.
+  - Same as `html_render_response/3` but with Vars = [].
+
 # Manual
 
 Teruel is a template engine. It takes a text file annotated with some code in delimiters and returns a processed text file (renders it). It is usually used with HTML, but Teruel doesn't make any assumption.

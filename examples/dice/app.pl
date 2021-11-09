@@ -10,8 +10,7 @@ listen(Port) :-
     ]).
 
 index(_Request, Response) :-
-    http_headers(Response, ["content-type"-"text/html"]),
-    http_body(Response, file("index.html")).
+    html_render_response(Response, "index.html").
 
 dice(_Request, Response) :-
     random_integer(1, 7, N),
