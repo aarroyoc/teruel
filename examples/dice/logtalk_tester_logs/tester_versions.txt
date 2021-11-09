@@ -1,12 +1,0 @@
-The environment variable LOGTALKUSER should be defined first, pointing
-to your Logtalk user directory!
-Trying the default location for the Logtalk user directory...
-
-caught: error('$interrupt_thrown',repl)
-[?2004h[0K?- [3C[?2004l
-caught: error(syntax_error(input_output_error),read_term/3)
-[?2004h[0K?- [3C[?2004l
-caught: error(syntax_error(input_output_error),read_term/3)
-[?2004h[0K?- [3C[?2004l
-caught: error(syntax_error(input_output_error),read_term/3)
-[?2004h[0K?- [3C
