@@ -1,4 +1,4 @@
-:- use_module('teruel').
+:- use_module(teruel).
 
 :- object(tests, extends(lgtunit)).
 
