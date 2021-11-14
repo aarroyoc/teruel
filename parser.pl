@@ -3,6 +3,9 @@
 :- use_module(library(lists)).
 :- use_module(library(pio)).
 :- use_module(library(files)).
+:- use_module(library(dif)).
+
+goal_expansion(maplist(dif(X), As), dif_from_all(As, X)).
 
 % Try to implement most of Tera: https://tera.netlify.app/docs/#templates
 parser(node(expr(X), Xs), Path) -->
@@ -124,7 +127,7 @@ parser_blocks([], _) --> [].
 string_([X|Xs]) -->
     [X],
     {
-        \+ member(X, "{}%")
+        maplist(dif(X), "{}%")
     },
     string_(Xs).
 
@@ -149,3 +152,6 @@ concat_path(Path, File, PathFile) :-
     path_segments(File, P1),
     append(P0, P1, P2),
     path_segments(PathFile, P2).
+
+dif_from_all([], _).
+dif_from_all([A|As], X) :- dif(A, X), dif_from_all(As, X).

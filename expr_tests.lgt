@@ -34,8 +34,11 @@
     test(mul_par, true(Result == "13")) :-
         eval_expr("(1 + 3) * 3 + 1", [], Result).
 
+    test(sum_float, true(Result == "1.5")) :-
+        eval_expr("0.75 + 0.75", [], Result).
+
     test(div, true(Result == "0")) :-
-        eval_expr("1 - 2 / 2", [], Result).
+        eval_expr("1 - 2 / 2 | floor", [], Result).
 
     test(equal, true(Result == "true")) :-
         eval_expr("1 + 2 == 3", [], Result).

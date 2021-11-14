@@ -17,7 +17,9 @@
     filter_reverse/2,
     filter_sort/2,
     filter_sort/3,
-    filter_unique/2
+    filter_unique/2,
+    filter_floor/2,
+    filter_ceiling/2
 ]).
 
 :- use_module(library(dcgs)).
@@ -163,6 +165,12 @@ get_key(Key, Item, Value) :-
 
 filter_unique(In, Out) :-
     list_to_set(In, Out).
+
+filter_floor(In, Out) :-
+    Out is floor(In).
+
+filter_ceiling(In, Out) :-
+    Out is ceiling(In).
 
 string_([X|Xs]) -->
     [X],

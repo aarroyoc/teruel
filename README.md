@@ -318,3 +318,5 @@ Here are the list of filters Teruel supports:
 * `sort` - Sort a list
 * `sort(key=Key)` - Sort a list by looking at the value of the key. Works for list of pairs.
 * `unique` - Removes duplicated elements
+* `floor` - Converts the number to the largest integer smaller or equal
+* `ceiling` - Converts the number to the smallest integer larger or equal

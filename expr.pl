@@ -321,3 +321,4 @@ number_([D|Ds]) --> digit(D), number_(Ds).
 number_([D])    --> digit(D).
 
 digit(D) --> [D], { char_type(D, decimal_digit) }.
+digit(D) --> [D], { D = '.'}.
