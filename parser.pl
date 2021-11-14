@@ -24,6 +24,7 @@ parser(node(raw(X), Xs), Path) -->
     raw_string_(X),
     {
         \+ contains(X, "{% endraw %}")
+        % when perf is better: \+ phrase((...,"{% endraw %}",...), X)
     },
     "{% endraw %}",
     parser(Xs, Path).
@@ -125,7 +126,7 @@ parser_blocks([Name-X|Blocks], Path) -->
     "{% endblock %}",
     parser_blocks(Blocks, Path).
 
-parser_blocks([], _) --> [].
+parser_blocks([], _) --> whitespace_.
 
 string_([X|Xs]) -->
     [X],
@@ -143,6 +144,15 @@ raw_string_([X|Xs]) -->
 
 raw_string_([]) -->
     [].
+
+whitespace_ -->
+    [X],
+    {
+        memberchk(X, " \t\n\r")
+    },
+    whitespace_.
+
+whitespace_ --> [].
 
 canonical_dir(Chars, FolderPath) :-
     path_canonical(Chars, Path),
