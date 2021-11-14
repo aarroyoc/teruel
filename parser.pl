@@ -22,6 +22,9 @@ parser(node(expr(X), Xs), Path) -->
 parser(node(raw(X), Xs), Path) -->
     "{% raw %}",
     raw_string_(X),
+    {
+        \+ contains(X, "{% endraw %}")
+    },
     "{% endraw %}",
     parser(Xs, Path).
 
@@ -155,3 +158,7 @@ concat_path(Path, File, PathFile) :-
 
 dif_from_all([], _).
 dif_from_all([A|As], X) :- dif(A, X), dif_from_all(As, X).
+
+contains(X, In) :-
+    append(_, Y, X),
+    append(In, _, Y).
