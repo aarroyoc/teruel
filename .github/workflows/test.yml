@@ -3,7 +3,7 @@ on: [push]
 
 jobs:
   test:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     steps:
       - name: Install Rust cargo
         uses: actions-rs/toolchain@v1
@@ -11,15 +11,21 @@ jobs:
           toolchain: stable
           profile: minimal
           components: cargo
-      - name: Install Scryer Prolog
-        uses: logtalk-actions/setup-scryer-prolog@master
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Checkout Scryer Prolog
+        uses: actions/checkout@v3
         with:
-          scryer-prolog-version: latest
+          repository: mthom/scryer-prolog
+          path: scryer-prolog
+      - name: Compile Scryer Prolog
+        run: cargo build --release
+        working-directory: scryer-prolog
+      - name: Install Scryer Prolog
+        run: sudo cp scryer-prolog/target/release/scryer-prolog /usr/bin/scryer-prolog
       - name: Install Logtalk
         uses: logtalk-actions/setup-logtalk@master
         with:
           logtalk-version: latest
-      - name: Checkout
-        uses: actions/checkout@v2
       - name: Execute tests
         run: logtalk_tester -p scryer
