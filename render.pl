@@ -6,78 +6,52 @@
 :- use_module(expr).
 :- use_module(filters).
 
-render_tree(node(text(X), Node), Vars, Output) :-
-    render_tree(Node, Vars, Output1),
-    append(X, Output1, Output).
+render_tree(Tree, Vars, Output) :-
+    maplist(render_node(Vars), Tree, Outputs),
+    append(Outputs, Output).
 
-render_tree(node(expr(ExprString), Node), Vars, Output) :-
-    eval_expr(ExprString, Vars, ExprValue),
-    render_tree(Node, Vars, Output1),
-    append(ExprValue, Output1, Output).
+render_node(_Vars, text(X), X).
 
-render_tree(node(raw(X), Node), Vars, Output) :-
-    render_tree(Node, Vars, Output1),
-    append(X, Output1, Output).
+render_node(Vars, expr(ExprString), Output) :-
+    eval_expr(ExprString, Vars, Output).
 
-render_tree(node(filter(FilterExpr, X), Node), Vars, Output) :-
+render_node(_Vars, raw(X), X).
+
+render_node(Vars, filter(FilterExpr, X), Output) :-
     render_tree(X, Vars, Output0),
-    render_tree(Node, Vars, Output1),
     once(phrase(filter_(FilterName, FilterArgs), FilterExpr)),
     append("filter_", FilterName, FilterNameComplete),
     atom_chars(FilterAtom, FilterNameComplete),
     (FilterArgs = [] ->
-        call(FilterAtom, Output0, OutputFiltered)
-    ;   call(FilterAtom, Output0, OutputFiltered, FilterArgs)
-    ),
-    append(OutputFiltered, Output1, Output).
-
-render_tree(node(if(Expr, X), Node), Vars, Output) :-
-    eval_expr(Expr, Vars, Result),
-    render_tree(Node, Vars, Output1),
-    ( Result = "true" ->
-      (
-          render_tree(X, Vars, Output0),
-          append(Output0, Output1, Output)     
-      )
-    ; Output1 = Output
+	 call(FilterAtom, Output0, Output)
+    ;    call(FilterAtom, Output0, Output, FilterArgs)
     ).
 
-render_tree(node(if_else(Expr, X, Y), Node), Vars, Output) :-
+render_node(Vars, if(Expr, X, Y), Output) :-
     eval_expr(Expr, Vars, Result),
-    render_tree(Node, Vars, Output1),
     ( Result = "true" ->
-        render_tree(X, Vars, Output0)
-    ;   render_tree(Y, Vars, Output0)
-    ),
-    append(Output0, Output1, Output).
+      render_tree(X, Vars, Output)
+    ; render_tree(Y, Vars, Output)
+    ).
 
-render_tree(node(for(LocalVar, ListExpr, X), Node), Vars, Output) :-
+render_node(Vars, for(LocalVar, ListExpr, X), Output) :-
     eval_expr(ListExpr, Vars, ListValues),
-    maplist(render_for(LocalVar, X, Vars), ListValues, Blocks),
-    reverse(Blocks, BlocksReversed),
-    foldl(append, BlocksReversed, [], Output0),
-    render_tree(Node, Vars, Output1),
-    append(Output0, Output1, Output).
+    maplist(render_for(LocalVar, X, Vars), ListValues, SubOutputs),
+    append(SubOutputs, Output).
 
-render_tree(node(include(X), Xs), Vars, Output) :-
-    render_tree(X, Vars, Output0),
-    render_tree(Xs, Vars, Output1),
-    append(Output0, Output1, Output).
+render_node(Vars, include(X), Output) :-
+    render_tree(X, Vars, Output).
 
-render_tree(node(extends(X, Blocks)), Vars, Output) :-
+render_node(Vars, extends(X, Blocks), Output) :-
     maplist(prefix_blocks, Blocks, VarBlocks),
     append(Vars, VarBlocks, VarsExtends),
     render_tree(X, VarsExtends, Output).
 
-render_tree(node(block(Name, X), Xs), Vars, Output) :-
+render_node(Vars, block(Name, X), Output) :-
     append("__block__", Name, VarBlockName),
     findall(Block, member(VarBlockName-Block, Vars), BlocksR),
     reverse(BlocksR, Blocks),
-    render_block([X|Blocks], Vars, Output0),
-    render_tree(Xs, Vars, Output1),
-    append(Output0, Output1, Output).
-
-render_tree([], _, []).
+    render_block([X|Blocks], Vars, Output).
 
 render_block([Block], Vars, Output) :-
     render_tree(Block, Vars, Output).
@@ -86,9 +60,9 @@ render_block([Block|Blocks], Vars, Output) :-
     render_block(Blocks, ["super"-Super|Vars], Output).
     
 
-render_for(LocalVar, LocalNode, Vars, ListValue, Block) :-
+render_for(LocalVar, LocalNode, Vars, ListValue, Output) :-
     append(Vars, [LocalVar-ListValue], LocalVars),
-    render_tree(LocalNode, LocalVars, Block).
+    render_tree(LocalNode, LocalVars, Output).
 
 prefix_blocks(BlockName-Block, VarBlockName-Block) :-
     append("__block__", BlockName, VarBlockName).

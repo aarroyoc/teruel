@@ -35,6 +35,9 @@ expr(filter(FilterName, X)) -->
 expr(X) -->
     logic_expr(X).
 
+logic_expr(X) -->
+    bool_expr(X).
+
 logic_expr(and(X, Y)) -->
     bool_expr(X),
     " and ",
@@ -49,8 +52,8 @@ logic_expr(not(X)) -->
     "not ",
     logic_expr(X).
 
-logic_expr(X) -->
-    bool_expr(X).
+bool_expr(X) -->
+    sum_expr(X).
 
 bool_expr(eq(X, Y)) -->
     sum_expr(X),
@@ -82,8 +85,8 @@ bool_expr(ge(X, Y)) -->
     " >= ",
     sum_expr(Y).
 
-bool_expr(X) -->
-    sum_expr(X).
+sum_expr(X) -->
+    mul_expr(X).
 
 sum_expr(sum(X, Y)) -->
     mul_expr(X),
@@ -95,8 +98,8 @@ sum_expr(minus(X, Y)) -->
     " - ",
     sum_expr(Y).
 
-sum_expr(X) -->
-    mul_expr(X).
+mul_expr(X) -->
+    data_expr(X).
 
 mul_expr(mul(X, Y)) -->
     data_expr(X),
@@ -113,8 +116,6 @@ mul_expr(mod(X, Y)) -->
     " % ",
     mul_expr(Y).
 
-mul_expr(X) -->
-    data_expr(X).
 
 data_expr(string(X)) -->
     "\"",
@@ -308,7 +309,6 @@ var_string_(['.'|X]) -->
 
 var_string_([]) -->
     [].
-
 
 raw_string_([X|Xs]) -->
     [X],

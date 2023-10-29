@@ -1,5 +1,6 @@
 :- use_module(library(random)).
 :- use_module(lyncex).
+:- use_module(library(time)).
 :- use_module('../../teruel.pl').
 
 listen(Port) :-
@@ -14,7 +15,7 @@ index(_Request, Response) :-
 
 dice(_Request, Response) :-
     random_integer(1, 7, N),
-    render("dice.svg", ["n"-N], DiceSvg),
+    time(render("dice.svg", ["n"-N], DiceSvg)),!,
     http_status_code(Response, 200),
     http_headers(Response, ["content-type"-"image/svg+xml"]),
     http_body(Response, text_custom(DiceSvg)).

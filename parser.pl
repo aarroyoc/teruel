@@ -3,145 +3,168 @@
 :- use_module(library(lists)).
 :- use_module(library(pio)).
 :- use_module(library(files)).
-:- use_module(library(dif)).
+:- use_module(library(dcgs)).
 
 % Try to implement most of Tera: https://tera.netlify.app/docs/#templates
-parser(node(expr(X), Xs), Path) -->
+
+parser([], _) --> [].
+parser([Node|Ast], Path) -->
+    (
+	parser_expr(Node)
+    ;   parser_raw(Node)
+    ;   parser_filter(Node, Path)
+    ;   parser_if(Node, Path)
+    ;   parser_for(Node, Path)
+    ;   parser_include(Node, Path)
+    ;   parser_extends(Node, Path)
+    ;   parser_block(Node, Path)
+    ;   parser_comment
+    ;   parser_text(Node)
+    ),
+    parser(Ast, Path).
+
+parser_expr(expr(X)) -->
     "{{ ",
-    string_(X),
-    {
-        length(X, N),
-        N > 0
-    },
-    " }}",
-    parser(Xs, Path).
+    seq(X),
+    " }}".
 
-% statements
-parser(node(raw(X), Xs), Path) -->
+parser_raw(raw(X)) -->
     "{% raw %}",
-    raw_string_(X),
-    {
-        \+ contains(X, "{% endraw %}")
-        % when perf is better: \+ phrase((...,"{% endraw %}",...), X)
-    },
-    "{% endraw %}",
-    parser(Xs, Path).
+    seq(X),
+    "{% endraw %}".
 
-parser(node(filter(Filter, X), Xs), Path) -->
+parser_filter(filter(Filter, X), Path) -->
     "{% filter ",
-    string_(Filter),
+    seq(Filter),
     " %}",
-    parser(X, Path),
-    "{% endfilter %}",
-    parser(Xs, Path).
+    parser_in_filter(X, Path).
 
-parser(node(if_else(Expr, X, Y), Xs), Path) -->
+parser_if(if(Expr, If, Else), Path) -->
     "{% if ",
-    string_(Expr),
+    seq(Expr),
     " %}",
-    parser(X, Path),
-    "{% else %}",
-    parser(Y, Path),
-    "{% endif %}",
-    parser(Xs, Path).
+    parser_in_if(If, Else, Path).
 
-parser(node(if(Expr, X), Xs), Path) -->
-    "{% if ",
-    string_(Expr),
-    " %}",
-    parser(X, Path),
-    "{% endif %}",
-    parser(Xs, Path).
-
-parser(node(for(LocalVar, ListExpr, X), Xs), Path) -->
+parser_for(for(LocalVar, ListExpr, X), Path) -->
     "{% for ",
-    string_(LocalVar),
+    seq(LocalVar),
     " in ",
-    string_(ListExpr),
-    " %}",
-    parser(X, Path),
-    "{% endfor %}",
-    parser(Xs, Path).
+    seq(ListExpr),
+    " %}",!,
+    parser_in_for(X, Path).
 
-parser(node(include(X), Xs), Path) -->
+parser_include(include(X), Path) -->
     "{% include \"",
-    string_(File),
+    seq(File),
     "\" %}",
     {
-        concat_path(Path, File, PathFile),
-        canonical_dir(PathFile, PathDir),
-        atom_chars(AtomFile, PathFile),
-        once(phrase_from_file(parser(X, PathDir), AtomFile))
-    },
-    parser(Xs, Path).
+	concat_path(Path, File, PathFile),
+	canonical_dir(PathFile, PathDir),
+	once(phrase_from_file(parser(X, PathDir), PathFile))
+    }.
 
-parser(node(extends(X, Blocks)), Path) -->
+parser_extends(extends(X, Blocks), Path) -->
     "{% extends \"",
-    string_(File),
+    seq(File),
     "\" %}",
     parser_blocks(Blocks, Path),
     {
-        concat_path(Path, File, PathFile),
-        canonical_dir(PathFile, PathDir),
-        atom_chars(AtomFile, PathFile),
-        phrase_from_file(parser(X, PathDir), AtomFile)
+	concat_path(Path, File, PathFile),
+	canonical_dir(PathFile, PathDir),
+	phrase_from_file(parser(X, PathDir), PathFile)
     }.
 
-parser(node(block(Name, X), Xs), Path) -->
+parser_block(block(Name, X), Path) -->
     "{% block ",
-    string_(Name),
+    seq(Name),
     " %}",
-    parser(X, Path),
+    seq(Content),
     "{% endblock %}",
-    parser(Xs, Path).
+    { phrase(parser(X, Path), Content) }.
 
-% comments
-parser(Xs, Path) -->
+parser_comment -->
     "{#",
-    raw_string_(_),
-    "#}",
-    parser(Xs, Path).
+    seq(_),
+    "#}".
 
-% normal text
-parser(node(text(X), Xs), Path) -->
-    string_(X),
-    {
-        length(X, N),
-        N > 0,!
-    },
-    parser(Xs, Path).
+parser_text(text([C])) --> [C].
 
-parser([], _) --> [].
+parser_in_for([], _) --> "{% endfor %}".
+parser_in_for([Node|Ast], Path) -->
+    (
+	parser_expr(Node)
+    ;   parser_raw(Node)
+    ;   parser_filter(Node, Path)
+    ;   parser_if(Node, Path)
+    ;   parser_for(Node, Path)
+    ;   parser_include(Node, Path)
+    ;   parser_comment
+    ;   parser_text(Node)
+    ),
+    parser_in_for(Ast, Path).
+
+parser_in_if([],[], _) --> "{% endif %}".
+parser_in_if([], Else, Path) -->
+    "{% else %}",
+    parser_in_else(Else, Path).
+parser_in_if([Node|Ast], Else, Path) -->
+    (
+	parser_expr(Node)
+    ;   parser_raw(Node)
+    ;   parser_filter(Node, Path)
+    ;   parser_if(Node, Path)
+    ;   parser_for(Node, Path)
+    ;   parser_include(Node, Path)
+    ;   parser_comment
+    ;   parser_text(Node)
+    ),
+    parser_in_if(Ast, Else, Path).
+
+parser_in_else([], _) --> "{% endif %}".
+parser_in_else([Node|Ast], Path) -->
+    (
+	parser_expr(Node)
+    ;   parser_raw(Node)
+    ;   parser_filter(Node, Path)
+    ;   parser_if(Node, Path)
+    ;   parser_for(Node, Path)
+    ;   parser_include(Node, Path)
+    ;   parser_comment
+    ;   parser_text(Node)
+    ),
+    parser_in_else(Ast, Path).
+
+parser_in_filter([], _) --> "{% endfilter %}".
+parser_in_filter([Node|Ast], Path) -->
+    (
+	parser_expr(Node)
+    ;   parser_raw(Node)
+    ;   parser_filter(Node, Path)
+    ;   parser_if(Node, Path)
+    ;   parser_for(Node, Path)
+    ;   parser_include(Node, Path)
+    ;   parser_comment
+    ;   parser_text(Node)
+    ),
+    parser_in_filter(Ast, Path).
+
+    
+look_ahead(T), [T] --> [T].
 
 % Parser for child templates
 
 parser_blocks([Name-X|Blocks], Path) -->
-    string_(_),
+    seq(_),
     "{% block ",
-    string_(Name),
+    seq(Name),
     " %}",
-    parser(X, Path),
+    seq(Content),
     "{% endblock %}",
+    { phrase(parser(X, Path), Content) },
+    !,
     parser_blocks(Blocks, Path).
 
 parser_blocks([], _) --> whitespace_.
-
-string_([X|Xs]) -->
-    [X],
-    {
-        maplist(dif(X), "{}%")
-    },
-    string_(Xs).
-
-string_([]) -->
-    [].
-
-raw_string_([X|Xs]) -->
-    [X],
-    raw_string_(Xs).
-
-raw_string_([]) -->
-    [].
 
 whitespace_ -->
     [X],
