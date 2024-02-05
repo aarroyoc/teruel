@@ -158,13 +158,25 @@ parser_blocks([Name-X|Blocks], Path) -->
     "{% block ",
     seq(Name),
     " %}",
-    seq(Content),
-    "{% endblock %}",
-    { phrase(parser(X, Path), Content) },
-    !,
+    parser_in_block(X, Path),
     parser_blocks(Blocks, Path).
-
 parser_blocks([], _) --> whitespace_.
+
+parser_in_block([], _) --> "{% endblock %}".
+parser_in_block([Node|Ast], Path) -->
+    (
+	parser_expr(Node)
+    ;   parser_raw(Node)
+    ;   parser_filter(Node, Path)
+    ;   parser_if(Node, Path)
+    ;   parser_for(Node, Path)
+    ;   parser_include(Node, Path)
+    ;   parser_extends(Node, Path)
+    ;   parser_block(Node, Path)
+    ;   parser_comment
+    ;   parser_text(Node)
+    ),
+    parser_in_block(Ast, Path).
 
 whitespace_ -->
     [X],
